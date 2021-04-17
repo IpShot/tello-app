@@ -75,11 +75,19 @@ class Controller:
     def rotate(self, v):
         self.rotate_velocity = self.get_motion_speed(v)
 
+    def lock(self):
+        self.rc_control_enabled = False
+
+    def unlock(self):
+        self.rc_control_enabled = True
+
     def stop(self):
         self.forward_back_velocity = 0
         self.left_right_velocity = 0
         self.up_down_velocity = 0
         self.rotate_velocity = 0
+        self.update()
+        self.lock()
 
     def handle_event(self, e):
         # Joystics
@@ -108,7 +116,10 @@ class Controller:
                     self.drone.land()
                     self.rc_control_enabled = False
             elif e.button == DS4.CROSS:
-                stop()
+                if self.rc_control_enabled:
+                    self.stop()
+                else:
+                    self.unlock()
 
         elif e.type == pygame.locals.JOYBUTTONUP:
             pass
