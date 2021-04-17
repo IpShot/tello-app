@@ -7,8 +7,9 @@ from djitellopy import Tello
 from controller import Controller
 
 def main():
+	dev = True
 	tello = Tello()
-	controller = Controller(tello, mock=True)
+	controller = Controller(tello, dev=dev)
 
 	try:
 		print ('Looking for joystick...')
@@ -20,7 +21,8 @@ def main():
 				print('Joystick connected: ' + ds4.get_name())
 				break
 
-		tello.connect()
+		if not dev:
+			tello.connect()
 
 		while True:
 			time.sleep(0.01)
