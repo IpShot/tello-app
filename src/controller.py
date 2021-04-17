@@ -103,19 +103,18 @@ class Controller:
 
         # Arrow buttons
         elif e.type == pygame.locals.JOYHATMOTION:
-            pass
-
-        # All other buttons including joysticks press
-        elif e.type == pygame.locals.JOYBUTTONDOWN:
-            if e.button == DS4.SHARE:
+            if e.value == DS4.ARROW_UP:
                 if not self.rc_control_enabled:
                     self.drone.takeoff()
                     self.rc_control_enabled = True
-            elif e.button == DS4.OPTIONS:
+            elif e.value == DS4.ARROW_DOWN:
                 if self.rc_control_enabled:
                     self.drone.land()
                     self.rc_control_enabled = False
-            elif e.button == DS4.CROSS:
+
+        # All other buttons including joysticks press
+        elif e.type == pygame.locals.JOYBUTTONDOWN:
+            if e.button == DS4.CROSS:
                 if self.rc_control_enabled:
                     self.stop()
                 else:
