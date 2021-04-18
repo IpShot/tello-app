@@ -7,7 +7,7 @@ from djitellopy import Tello
 from controller import Controller
 
 def main():
-	dev = True
+	dev = False
 	tello = Tello()
 
 	if not dev:
@@ -38,7 +38,7 @@ def main():
 					controller.handle_event(e)
 
 	except KeyboardInterrupt as e:
-		print(e)
+		pass
 	except Exception as e:
 		exc_type, exc_value, exc_traceback = sys.exc_info()
 		traceback.print_exception(exc_type, exc_value, exc_traceback)
