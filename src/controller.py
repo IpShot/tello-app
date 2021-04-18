@@ -30,7 +30,7 @@ class DS4:
     L2_AXIS = 3 # between -1 (unpressed) ~ 1 (pressed)
     R2_AXIS = 4 # between -1 (unpressed) ~ 1 (pressed)
 
-    DEADZONE = 0.1
+    DEADZONE = 0.2
 
 class DroneMock:
     def send_rc_control(self, *args):
