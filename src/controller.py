@@ -43,7 +43,7 @@ class DroneMock:
         pass
 
 class Controller:
-    def __init__(self, drone, speed=30, dev=False, logs=True):
+    def __init__(self, drone, speed=10, dev=False, logs=True):
         pygame.init()
         pygame.joystick.init()
 
@@ -58,7 +58,7 @@ class Controller:
         self.prev_velocities = (0, 0, 0, 0)
         self.speed = speed
         self.rc_control_enabled = False
-        self.drone.set_speed(10)
+        self.drone.set_speed(speed)
 
 
     def get_motion_speed(self, v):
