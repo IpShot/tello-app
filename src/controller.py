@@ -57,11 +57,11 @@ class Controller:
         self.rotate_velocity = 0
         self.speed = speed
         self.rc_control_enabled = False
-        self.drone.set_speed(speed)
+        self.drone.set_speed(10)
 
 
     def get_motion_speed(self, v):
-        return 0 if abs(v) <= DS4.DEADZONE else v * self.speed
+        return 0 if abs(v) <= DS4.DEADZONE else int(round(v * self.speed))
 
     def move_left_right(self, v):
         self.left_right_velocity = self.get_motion_speed(v)

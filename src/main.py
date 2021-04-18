@@ -9,26 +9,33 @@ from controller import Controller
 def main():
 	dev = True
 	tello = Tello()
+
+	if not dev:
+		tello.connect()
+		tello.streamoff()
+		tello.streamon()
+
 	controller = Controller(tello, dev=dev)
+
+	# Send a command every 20 milliseconds
+	pygame.time.set_timer(pygame.USEREVENT + 1, 20)
 
 	try:
 		print ('Looking for joystick...')
-		while True:
-			time.sleep(1)
-			if pygame.joystick.get_count() != 0:
-				ds4 = pygame.joystick.Joystick(0)
-				ds4.init()
-				print('Joystick connected: ' + ds4.get_name())
-				break
-
-		if not dev:
-			tello.connect()
+		if pygame.joystick.get_count() > 0:
+			ds4 = pygame.joystick.Joystick(0)
+			ds4.init()
+			print('Joystick connected: ' + ds4.get_name())
+		else:
+			print('Joystick hasn\'t connected')
+			exit(0)
 
 		while True:
-			time.sleep(0.01)
-			controller.update()
 			for e in pygame.event.get():
-				controller.handle_event(e)
+				if e.type == pygame.USEREVENT + 1:
+					controller.update()
+				else:
+					controller.handle_event(e)
 
 	except KeyboardInterrupt as e:
 		print(e)
@@ -37,7 +44,8 @@ def main():
 		traceback.print_exception(exc_type, exc_value, exc_traceback)
 		print(e)
 
-	tello.end()
+	if not dev:
+		tello.end()
 
 
 if __name__ == '__main__':
