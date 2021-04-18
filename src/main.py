@@ -17,7 +17,7 @@ def main():
 
 	controller = Controller(tello, dev=dev)
 
-	# Update dron state (send a command) every 20 milliseconds
+	# Update drone state (send a command) every 20 milliseconds
 	pygame.time.set_timer(pygame.USEREVENT + 1, 20)
 
 	try:
