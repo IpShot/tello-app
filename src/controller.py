@@ -30,8 +30,6 @@ class DS4:
     L2_AXIS = 3 # between -1 (unpressed) ~ 1 (pressed)
     R2_AXIS = 4 # between -1 (unpressed) ~ 1 (pressed)
 
-    DEADZONE = 0.2
-
 class DroneMock:
     def send_rc_control(self, *args):
         pass
@@ -43,6 +41,8 @@ class DroneMock:
         pass
 
 class Controller:
+    DEADZONE = 0.2 # Skip event reaction if value is smaller
+
     def __init__(self, drone, speed=50, dev=False, logs=True):
         pygame.init()
         pygame.joystick.init()
@@ -62,7 +62,7 @@ class Controller:
 
 
     def get_motion_speed(self, v):
-        return 0 if abs(v) <= DS4.DEADZONE else int(round(v * self.speed))
+        return 0 if abs(v) <= Controller.DEADZONE else int(round(v * self.speed))
 
     def move_left_right(self, v):
         self.left_right_velocity = self.get_motion_speed(v)
@@ -121,6 +121,8 @@ class Controller:
                         self.stop()
                     else:
                         self.unlock()
+            elif e.button == DS4.SHARE:
+                self.drone.emergency()
 
         elif e.type == pygame.locals.JOYBUTTONUP:
             pass
