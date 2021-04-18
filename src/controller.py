@@ -55,6 +55,7 @@ class Controller:
         self.left_right_velocity = 0
         self.up_down_velocity = 0
         self.rotate_velocity = 0
+        self.prev_velocities = (0, 0, 0, 0)
         self.speed = speed
         self.rc_control_enabled = False
         self.drone.set_speed(10)
@@ -123,15 +124,20 @@ class Controller:
         elif e.type == pygame.locals.JOYBUTTONUP:
             pass
 
-    def update(self):
+    def send_rc(self, *args):
         if self.rc_control_enabled:
-            self.log_motion()
-            self.drone.send_rc_control(
-                self.left_right_velocity,
-                self.forward_back_velocity,
-                self.up_down_velocity,
-                self.rotate_velocity
-            )
+            if self.prev_velocities != args:
+                self.prev_velocities = args
+                self.log_motion()
+                self.drone.send_rc_control(*args)
+
+    def update(self):
+        self.send_rc(
+            self.left_right_velocity,
+            self.forward_back_velocity,
+            self.up_down_velocity,
+            self.rotate_velocity
+        )
 
     def log_motion(self):
         if not self.logs:
