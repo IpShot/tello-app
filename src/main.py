@@ -4,18 +4,20 @@ import time
 import pygame
 import pygame.locals
 from djitellopy import Tello
-from controller import Controller
+from controller import Controller, DS4
+from route import Route
 
 def main():
 	dev = False
-	tello = Tello()
+	drone = Tello()
 
 	if not dev:
-		tello.connect()
-		tello.streamoff()
-		tello.streamon()
+		drone.connect()
+		drone.streamoff()
+		drone.streamon()
 
-	controller = Controller(tello, dev=dev)
+	controller = Controller(drone, dev=dev)
+	route = Route(drone, controller)
 
 	# Update drone state (send a command) every 20 milliseconds
 	pygame.time.set_timer(pygame.USEREVENT + 1, 20)
@@ -33,9 +35,9 @@ def main():
 		while True:
 			for e in pygame.event.get():
 				if e.type == pygame.USEREVENT + 1:
-					controller.update()
+					move_data = controller.update()
 				else:
-					controller.handle_event(e)
+					controller.handle_event(e, route)
 
 	except KeyboardInterrupt as e:
 		pass
@@ -45,7 +47,7 @@ def main():
 		print(e)
 
 	if not dev:
-		tello.end()
+		drone.end()
 
 
 if __name__ == '__main__':

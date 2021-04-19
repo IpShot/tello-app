@@ -90,7 +90,7 @@ class Controller:
         self.update()
         self.lock()
 
-    def handle_event(self, e):
+    def handle_event(self, e, route):
         # Joystics
         if e.type == pygame.locals.JOYAXISMOTION:
             if e.axis == DS4.LEFT_JOY_X:
@@ -121,8 +121,18 @@ class Controller:
                         self.stop()
                     else:
                         self.unlock()
-            elif e.button == DS4.SHARE:
+            elif e.button == DS4.TRIANGLE:
                 self.drone.emergency()
+            elif e.button == DS4.SHARE:
+                if not route.is_creating_new:
+                    route.start_creating_new()
+                else:
+                    route.finish_creating_new()
+            elif e.button == DS4.OPTIONS:
+                if not route.is_going:
+                    route.start_going()
+                else:
+                    route.stop_going()
 
         elif e.type == pygame.locals.JOYBUTTONUP:
             pass
@@ -133,9 +143,10 @@ class Controller:
                 self.prev_velocities = args
                 self.log_motion()
                 self.drone.send_rc_control(*args)
+                return args
 
     def update(self):
-        self.send_rc(
+        return self.send_rc(
             self.left_right_velocity,
             self.forward_back_velocity,
             self.up_down_velocity,
