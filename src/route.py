@@ -16,7 +16,7 @@ class Route:
         self.is_going = False
         self.time_point = 0
 
-    def _capture_time(self):
+    def _get_duration(self):
         t = time()
         diff = t - self.time_point
         self.time_point = t
@@ -30,8 +30,8 @@ class Route:
     def capture_move(self, rc):
         self.route.append({
             'action': Action.MOVE,
-            'time': self._capture_time(),
-            'rc': rc
+            'duration': self._get_duration(),
+            'values': rc
         })
 
     def capture_stop_point(self):
