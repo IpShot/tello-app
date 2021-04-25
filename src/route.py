@@ -8,24 +8,38 @@ class Route:
     '''
     Module for creating flight routes and use them
     '''
+    @staticmethod
+    def _save_route(route_name, route):
+        with open(route_name, 'w') as file:
+            file.writelines("%s\n" % action for action in route)
+
+    @staticmethod
+    def _load_route(route_name):
+        route = []
+        with open(route_name, 'r') as file:
+            # Remove linebreak and add action to the route
+            places = [action.rstrip() for action in file.readlines()]
+        return route
+
     def __init__(self, drone, controller):
         self.drone = drone
         self.route = []
-        self.route_name = 'default_route_' + time()
+        self.route_name = ''
         self.is_creating_new = False
         self.is_going = False
-        self.time_point = 0
+        self.last_capture_time = 0
 
     def _get_duration(self):
         t = time()
-        diff = t - self.time_point
-        self.time_point = t
+        diff = t - self.last_capture_time
+        self.last_capture_time = t
         return diff
 
-    def start_creating_new(self, route_name):
+    def start_creating_new(self, route_name = 'default_route_' + time()):
         self.route_name = route_name
         self.route = []
-        self.time_point = time()
+        self.last_capture_time = time()
+        self.is_creating_new = True
 
     def capture_move(self, rc):
         self.route.append({
@@ -38,10 +52,12 @@ class Route:
         self.route.append({ 'action': Action.STOP })
 
     def finish_creating_new(self):
-        self.time_point = 0
+        Route._save_route(self.route_name, self.route)
+        self.is_creating_new = False
 
     def start(self, route_name):
-        pass
+        self.route = Route._load_route(route_name)
+        self.is_going = True
 
     def stop(self):
-        pass
+        self.is_going = False
