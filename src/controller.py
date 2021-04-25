@@ -116,23 +116,24 @@ class Controller:
         # All other buttons including joysticks press
         elif e.type == pygame.locals.JOYBUTTONDOWN:
             if e.button == DS4.CROSS:
-                if self.drone.is_flying:
-                    if self.rc_control_enabled:
-                        self.stop()
-                    else:
-                        self.unlock()
+                if self.rc_control_enabled:
+                    self.stop()
+                else:
+                    self.unlock()
             elif e.button == DS4.TRIANGLE:
                 self.drone.emergency()
             elif e.button == DS4.SHARE:
                 if not route.is_creating_new:
-                    route.start_creating_new()
+                    route.start_creating_new('test')
                 else:
                     route.finish_creating_new()
             elif e.button == DS4.OPTIONS:
                 if not route.is_going:
-                    route.start_going()
+                    self.stop()
+                    route.start_going('test')
                 else:
                     route.stop_going()
+                    self.unlock()
 
         elif e.type == pygame.locals.JOYBUTTONUP:
             pass
