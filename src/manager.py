@@ -23,7 +23,7 @@ class Manager:
         joystick_connected = False
         while True:
             if joystick_connected and pygame.joystick.get_count() == 0:
-                self.controller.stop()
+                self.controller.freeze()
                 joystick_connected = False
                 print('Joystick disconnected')
                 print ('Looking for joystick...')

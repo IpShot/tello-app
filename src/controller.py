@@ -92,7 +92,8 @@ class Controller:
     def unlock(self):
         self.rc_control_enabled = True
 
-    def stop(self):
+    def freeze(self):
+        print('freeze drone')
         self.forward_back_velocity = 0
         self.left_right_velocity = 0
         self.up_down_velocity = 0
@@ -136,12 +137,12 @@ class Controller:
         elif e.type == pygame.locals.JOYBUTTONDOWN:
             if e.button == DS4.L1:
                 if self.rc_control_enabled:
-                    self.stop()
+                    self.freeze()
                 else:
                     self.unlock()
             elif e.button == DS4.SHARE:
                 self.drone.emergency()
-                self.stop()
+                self.freeze()
             elif e.button == DS4.OPTIONS:
                 if not route.is_creating_new:
                     route.start_creating_new('test')
@@ -149,7 +150,7 @@ class Controller:
                     route.finish_creating_new()
             elif e.button == DS4.R1:
                 if not route.is_going:
-                    # self.stop()
+                    self.freeze()
                     route.start('test')
                 else:
                     route.stop()
