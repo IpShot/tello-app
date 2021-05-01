@@ -36,6 +36,7 @@ class Manager:
                     ds4.init()
                     joystick_connected = True
                     print('Joystick connected: ' + ds4.get_name())
+                    pygame.event.clear()
 
             if joystick_connected:
                 for e in pygame.event.get():
