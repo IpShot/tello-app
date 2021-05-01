@@ -33,17 +33,19 @@ class DS4:
 class DroneMock:
     def send_rc_control(self, *args):
         pass
-    def set_speed(self, *args):
-        pass
+    def set_speed(self, speed):
+        print('set speed %s cm/s' % speed)
     def takeoff(self):
-        pass
+        print('take off')
     def land(self):
-        pass
+        print('land')
+    def emergency(self):
+        print('emergency turn off')
 
 class Controller:
     DEADZONE = 0.2 # Skip event reaction if value is smaller
 
-    def __init__(self, drone, speed=50, dev=False, logs=True):
+    def __init__(self, drone, speed=30, dev=False, logs=True):
         pygame.init()
         pygame.joystick.init()
 
@@ -60,8 +62,9 @@ class Controller:
         self.rc_control_enabled = False
         self.drone.set_speed(speed)
 
-    def set_move(self, *args):
-        self.left_right_velocity, self.forward_back_velocity, self.up_down_velocity, self.rotate_velocity = args
+    def set_move(self, args):
+        self.left_right_velocity, self.forward_back_velocity, \
+            self.up_down_velocity, self.rotate_velocity = args
 
     def get_move(self):
         return (
@@ -125,6 +128,12 @@ class Controller:
                 if self.rc_control_enabled:
                     self.drone.land()
                     self.rc_control_enabled = False
+            elif e.value == DS4.ARROW_LEFT:
+                if self.rc_control_enabled:
+                    route.prev_stop_point()
+            elif e.value == DS4.ARROW_RIGHT:
+                if self.rc_control_enabled:
+                    route.next_stop_point()
 
         # All other buttons including joysticks press
         elif e.type == pygame.locals.JOYBUTTONDOWN:
@@ -135,6 +144,7 @@ class Controller:
                     self.unlock()
             elif e.button == DS4.SHARE:
                 self.drone.emergency()
+                self.stop()
             elif e.button == DS4.OPTIONS:
                 if not route.is_creating_new:
                     route.start_creating_new('test')
@@ -143,9 +153,9 @@ class Controller:
             elif e.button == DS4.R1:
                 if not route.is_going:
                     # self.stop()
-                    route.start_going('test')
+                    route.start('test')
                 else:
-                    route.stop_going()
+                    route.stop()
                     # self.unlock()
             elif e.button == DS4.CROSS:
                 route.capture_stop_point()
