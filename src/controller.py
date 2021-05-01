@@ -1,4 +1,4 @@
-import pygame
+import pygame.locals
 
 class DS4:
     ARROW_UP = (0, 1)
@@ -46,9 +46,6 @@ class Controller:
     DEADZONE = 0.2 # Skip event reaction if value is smaller
 
     def __init__(self, drone, speed=30, dev=False, logs=True):
-        pygame.init()
-        pygame.joystick.init()
-
         self.logs = logs
         self.drone = DroneMock() if dev else drone
 

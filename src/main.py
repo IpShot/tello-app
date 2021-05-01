@@ -1,8 +1,6 @@
 import sys
 import traceback
 import time
-import pygame
-import pygame.locals
 from djitellopy import Tello
 from controller import Controller, DS4
 from route import Route
