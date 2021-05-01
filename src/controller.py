@@ -60,6 +60,16 @@ class Controller:
         self.rc_control_enabled = False
         self.drone.set_speed(speed)
 
+    def set_move(self, *args):
+        self.left_right_velocity, self.forward_back_velocity, self.up_down_velocity, self.rotate_velocity = args
+
+    def get_move(self):
+        return (
+            self.left_right_velocity,
+            self.forward_back_velocity,
+            self.up_down_velocity,
+            self.rotate_velocity
+        )
 
     def get_motion_speed(self, v):
         return 0 if abs(v) <= Controller.DEADZONE else int(round(v * self.speed))
@@ -102,6 +112,9 @@ class Controller:
             elif e.axis == DS4.RIGHT_JOY_Y:
                 self.move_up_down(e.value)
 
+            if route.is_creating_new:
+                route.capture_move(self.get_move())
+
         # Arrow buttons
         elif e.type == pygame.locals.JOYHATMOTION:
             if e.value == DS4.ARROW_UP:
@@ -115,25 +128,27 @@ class Controller:
 
         # All other buttons including joysticks press
         elif e.type == pygame.locals.JOYBUTTONDOWN:
-            if e.button == DS4.CROSS:
+            if e.button == DS4.L1:
                 if self.rc_control_enabled:
                     self.stop()
                 else:
                     self.unlock()
-            elif e.button == DS4.TRIANGLE:
-                self.drone.emergency()
             elif e.button == DS4.SHARE:
+                self.drone.emergency()
+            elif e.button == DS4.OPTIONS:
                 if not route.is_creating_new:
                     route.start_creating_new('test')
                 else:
                     route.finish_creating_new()
-            elif e.button == DS4.OPTIONS:
+            elif e.button == DS4.R1:
                 if not route.is_going:
-                    self.stop()
+                    # self.stop()
                     route.start_going('test')
                 else:
                     route.stop_going()
-                    self.unlock()
+                    # self.unlock()
+            elif e.button == DS4.CROSS:
+                route.capture_stop_point()
 
         elif e.type == pygame.locals.JOYBUTTONUP:
             pass
