@@ -6,6 +6,7 @@ import pygame.locals
 from djitellopy import Tello
 from controller import Controller, DS4
 from route import Route
+from manager import Manager
 
 def main():
 	dev = False
@@ -18,27 +19,10 @@ def main():
 
 	controller = Controller(drone, dev=dev)
 	route = Route(drone, controller)
-
-	# Update drone state (send a command) every 20 milliseconds
-	pygame.time.set_timer(pygame.USEREVENT + 1, 20)
+	manager = Manager(controller, route)
 
 	try:
-		print ('Looking for joystick...')
-		if pygame.joystick.get_count() > 0:
-			ds4 = pygame.joystick.Joystick(0)
-			ds4.init()
-			print('Joystick connected: ' + ds4.get_name())
-		else:
-			print('Joystick hasn\'t connected')
-			exit(0)
-
-		while True:
-			for e in pygame.event.get():
-				if e.type == pygame.USEREVENT + 1:
-					move_data = controller.update()
-				else:
-					controller.handle_event(e, route)
-
+		manager.start()
 	except KeyboardInterrupt as e:
 		pass
 	except Exception as e:
