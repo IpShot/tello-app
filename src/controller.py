@@ -59,9 +59,10 @@ class Controller:
         self.rc_control_enabled = False
         self.drone.set_speed(speed)
 
-    def set_move(self, args):
+    def move(self, args):
         self.left_right_velocity, self.forward_back_velocity, \
             self.up_down_velocity, self.rotate_velocity = args
+        self.update()
 
     def get_motion_speed(self, v):
         return 0 if abs(v) <= Controller.DEADZONE else int(round(v * self.speed))

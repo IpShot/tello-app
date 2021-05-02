@@ -92,7 +92,12 @@ class Route:
 
     def _exec_command(self, command):
         if command['action'] == Action.MOVE:
-            self.controller.set_move(command['values'])
+            self.controller.move(
+                tuple(map(
+                    lambda x: x * self.going_direction,
+                    command['values']
+                ))
+            )
             return time() + command['duration']
         elif command['action'] == Action.STOP:
             self._freeze_moving()
