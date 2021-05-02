@@ -11,7 +11,7 @@ class Manager:
     def handle_event(self, e):
         if e.type == pygame.USEREVENT + 1:
             move_data = self.controller.update()
-            if move_data and self.route.is_creating_new and move_data != (0, 0, 0, 0):
+            if move_data:
                 self.route.capture_move(move_data)
         else:
             self.controller.handle_event(e, self.route)

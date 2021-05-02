@@ -62,7 +62,7 @@ class Controller:
     def move(self, args):
         self.left_right_velocity, self.forward_back_velocity, \
             self.up_down_velocity, self.rotate_velocity = args
-        self.update()
+        self.send_rc(*args)
 
     def get_motion_speed(self, v):
         return 0 if abs(v) <= Controller.DEADZONE else int(round(v * self.speed))
@@ -117,10 +117,10 @@ class Controller:
                     self.drone.land()
                     self.rc_control_enabled = False
             elif e.value == DS4.ARROW_LEFT:
-                if self.rc_control_enabled:
+                if route.is_going:
                     route.prev_stop_point()
             elif e.value == DS4.ARROW_RIGHT:
-                if self.rc_control_enabled:
+                if route.is_going:
                     route.next_stop_point()
 
         # All other buttons including joysticks press
@@ -152,20 +152,20 @@ class Controller:
             pass
 
     def send_rc(self, *args):
-        if self.rc_control_enabled:
-            if self.prev_velocities != args:
-                self.prev_velocities = args
-                self.log_motion()
-                self.drone.send_rc_control(*args)
-                return args
+        if self.prev_velocities != args:
+            self.prev_velocities = args
+            self.log_motion()
+            self.drone.send_rc_control(*args)
+            return args
 
     def update(self):
-        return self.send_rc(
-            self.left_right_velocity,
-            self.forward_back_velocity,
-            self.up_down_velocity,
-            self.rotate_velocity
-        )
+        if self.rc_control_enabled:
+            return self.send_rc(
+                self.left_right_velocity,
+                self.forward_back_velocity,
+                self.up_down_velocity,
+                self.rotate_velocity
+            )
 
     def log_motion(self):
         if not self.logs:

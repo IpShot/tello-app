@@ -51,20 +51,23 @@ class Route:
     def capture_move(self, rc):
         if self.is_creating_new:
             if len(self.route) > 0:
-                if self.route[-1]['action'] != Action.STOP:
-                    self.route[-1]['duration'] = self._get_duration()
+                if self.route[-1]['action'] != Action.STOP and \
+                    self.route[-1].get('duration') == None:
+                        self.route[-1]['duration'] = self._get_duration()
                 else:
                     self.last_capture_time = time()
-
-            self.route.append({
-                'action': Action.MOVE,
-                'values': rc
-            })
+            if rc != (0, 0, 0, 0):
+                self.route.append({
+                    'action': Action.MOVE,
+                    'values': rc
+                })
 
     def capture_stop_point(self):
-        if self.is_creating_new and self.route[-1]['action'] != Action.STOP:
-            if len(self.route) > 0:
-                self.route[-1]['duration'] = self._get_duration()
+        if self.is_creating_new and \
+            (len(self.route) == 0 or self.route[-1]['action'] != Action.STOP):
+                if len(self.route) > 0 and \
+                    self.route[-1].get('duration') == None:
+                        self.route[-1]['duration'] = self._get_duration()
                 self.route.append({ 'action': Action.STOP })
 
     def start_creating_new(self, route_name = 'default_route_' + str(time())):
@@ -74,13 +77,14 @@ class Route:
             self.route_name = route_name
             self.last_capture_time = time()
             self.is_creating_new = True
+            self.capture_stop_point()
 
     def finish_creating_new(self):
         if self.is_creating_new:
             print('finish creating new route')
             if len(self.route) > 0:
-                Route._save_route(self.route_name, self.route)
                 self.capture_stop_point()
+                Route._save_route(self.route_name, self.route)
 
             self._reset()
 
@@ -91,7 +95,7 @@ class Route:
         self.is_stop_point = False
 
     def _exec_command(self, command):
-        if command['action'] == Action.MOVE:
+        if command['action'] == Action.MOVE and command.get('duration') != None:
             self.controller.move(
                 tuple(map(
                     lambda x: x * self.going_direction,
@@ -104,7 +108,7 @@ class Route:
         return -1
 
     def _exec_route(self):
-        command_number = 0
+        command_number = -1
         finish_time = -1
         while self.is_going:
             if not self.is_stop_point and (finish_time == -1 or time() >= finish_time):
