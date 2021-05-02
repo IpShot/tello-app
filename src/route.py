@@ -108,7 +108,9 @@ class Route:
             self.controller.stop_move()
         return -1
 
-    def _exec_route(self):
+    def _exec_route(self, route_name):
+        print('start route', route_name)
+        self.route = Route._load_route(route_name)
         command_number = -1
         finish_time = -1
         while self.is_going:
@@ -126,10 +128,8 @@ class Route:
 
     def start(self, route_name):
         if not self.is_going:
-            print('start route')
             self.is_going = True
-            self.route = Route._load_route(route_name)
-            thread = Thread(target=self._exec_route)
+            thread = Thread(target=self._exec_route, args=(route_name,))
             thread.start()
 
     def stop(self):
