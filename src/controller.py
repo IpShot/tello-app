@@ -51,14 +51,17 @@ class Controller:
         self.drone = DroneMock() if dev else drone
 
         # Drone velocities between -100~100
+        self.speed = speed
+        self.drone.set_speed(speed)
+
+    def reset(self):
+        pygame.event.clear()
         self.forward_back_velocity = 0
         self.left_right_velocity = 0
         self.up_down_velocity = 0
         self.rotate_velocity = 0
         self.prev_velocities = (0, 0, 0, 0)
-        self.speed = speed
         self.rc_control_enabled = False
-        self.drone.set_speed(speed)
 
     def move(self, args):
         self.left_right_velocity, self.forward_back_velocity, \
@@ -110,14 +113,13 @@ class Controller:
         elif e.type == pygame.locals.JOYHATMOTION:
             if e.value == DS4.ARROW_UP:
                 if not self.rc_control_enabled:
-                    pygame.event.clear()
+                    self.reset()
                     self.drone.takeoff()
                     self.rc_control_enabled = True
             elif e.value == DS4.ARROW_DOWN:
                 if self.rc_control_enabled:
-                    pygame.event.clear()
+                    self.reset()
                     self.drone.land()
-                    self.rc_control_enabled = False
             elif e.value == DS4.ARROW_LEFT:
                 if route.is_going:
                     route.prev_stop_point()
