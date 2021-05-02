@@ -1,6 +1,6 @@
 import pygame
 
-class Manager:
+class App:
     """
     Module for managing events
     """

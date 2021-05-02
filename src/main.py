@@ -4,10 +4,10 @@ import time
 from djitellopy import Tello
 from controller import Controller, DS4
 from route import Route
-from manager import Manager
+from app import App
 
 def main():
-    dev = True
+    dev =
     drone = Tello()
 
     if not dev:
@@ -17,10 +17,10 @@ def main():
 
     controller = Controller(drone, dev=dev)
     route = Route(drone, controller)
-    manager = Manager(controller, route)
+    app = App(controller, route)
 
     try:
-        manager.start()
+        app.start()
     except KeyboardInterrupt as e:
         pass
     except Exception as e:
