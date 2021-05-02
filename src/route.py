@@ -50,15 +50,22 @@ class Route:
 
     def capture_move(self, rc):
         if self.is_creating_new:
+            if len(self.route) > 0:
+                if self.route[-1]['action'] != Action.STOP:
+                    self.route[-1]['duration'] = self._get_duration()
+                else:
+                    self.last_capture_time = time()
+
             self.route.append({
                 'action': Action.MOVE,
-                'duration': self._get_duration(),
                 'values': rc
             })
 
     def capture_stop_point(self):
-        if self.is_creating_new and self.route[-1]['action'] is not Action.STOP:
-            self.route.append({ 'action': Action.STOP })
+        if self.is_creating_new and self.route[-1]['action'] != Action.STOP:
+            if len(self.route) > 0:
+                self.route[-1]['duration'] = self._get_duration()
+                self.route.append({ 'action': Action.STOP })
 
     def start_creating_new(self, route_name = 'default_route_' + str(time())):
         if not self.is_creating_new:
@@ -71,7 +78,10 @@ class Route:
     def finish_creating_new(self):
         if self.is_creating_new:
             print('finish creating new route')
-            Route._save_route(self.route_name, self.route)
+            if len(self.route) > 0:
+                Route._save_route(self.route_name, self.route)
+                self.capture_stop_point()
+
             self._reset()
 
     def _freeze_moving(self):

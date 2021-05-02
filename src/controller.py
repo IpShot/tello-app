@@ -63,14 +63,6 @@ class Controller:
         self.left_right_velocity, self.forward_back_velocity, \
             self.up_down_velocity, self.rotate_velocity = args
 
-    def get_move(self):
-        return (
-            self.left_right_velocity,
-            self.forward_back_velocity,
-            self.up_down_velocity,
-            self.rotate_velocity
-        )
-
     def get_motion_speed(self, v):
         return 0 if abs(v) <= Controller.DEADZONE else int(round(v * self.speed))
 
@@ -112,9 +104,6 @@ class Controller:
                 self.rotate(e.value)
             elif e.axis == DS4.RIGHT_JOY_Y:
                 self.move_up_down(e.value)
-
-            if route.is_creating_new:
-                route.capture_move(self.get_move())
 
         # Arrow buttons
         elif e.type == pygame.locals.JOYHATMOTION:
