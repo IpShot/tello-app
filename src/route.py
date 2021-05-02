@@ -134,8 +134,8 @@ class Route:
 
     def stop(self):
         print('stop route')
-        self.controller.freeze()
         self._reset()
+        self.controller.freeze()
 
     def next_stop_point(self):
         print('next step point')

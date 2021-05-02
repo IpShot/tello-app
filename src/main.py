@@ -7,7 +7,7 @@ from route import Route
 from app import App
 
 def main():
-    dev = True
+    dev = False
     drone = Tello()
 
     if not dev:
@@ -20,6 +20,8 @@ def main():
     app = App(controller, route)
 
     try:
+        print('Drone battery: %s%', % str(drone.get_battery()))
+        print('Drone temperature: %sC' % str(drone.temperature()))
         app.start()
     except KeyboardInterrupt as e:
         pass
