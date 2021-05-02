@@ -85,13 +85,12 @@ class Controller:
     def unlock(self):
         self.rc_control_enabled = True
 
+    def stop_move(self):
+        self.move((0, 0, 0, 0))
+
     def freeze(self):
         print('freeze drone')
-        self.forward_back_velocity = 0
-        self.left_right_velocity = 0
-        self.up_down_velocity = 0
-        self.rotate_velocity = 0
-        self.update()
+        self.stop_move()
         self.lock()
 
     def handle_event(self, e, route):
@@ -132,7 +131,7 @@ class Controller:
                     self.unlock()
             elif e.button == DS4.SHARE:
                 self.drone.emergency()
-                self.freeze()
+                self.stop_move()
             elif e.button == DS4.OPTIONS:
                 if not route.is_creating_new:
                     route.start_creating_new('test')

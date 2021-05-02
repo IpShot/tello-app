@@ -105,6 +105,7 @@ class Route:
             return time() + command['duration']
         elif command['action'] == Action.STOP:
             self._freeze_moving()
+            self.controller.stop_move()
         return -1
 
     def _exec_route(self):
