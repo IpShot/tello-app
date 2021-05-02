@@ -130,8 +130,8 @@ class Controller:
                 else:
                     self.unlock()
             elif e.button == DS4.SHARE:
+                self.freeze()
                 self.drone.emergency()
-                self.stop_move()
             elif e.button == DS4.OPTIONS:
                 if not route.is_creating_new:
                     route.start_creating_new('test')
