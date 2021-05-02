@@ -113,13 +113,13 @@ class Route:
         while self.is_going:
             if not self.is_stop_point and (finish_time == -1 or time() >= finish_time):
                 if (# Move on route in forward direction
-                    self.going_direction > 0 and command_number < len(self.route) or
+                    self.going_direction > 0 and command_number + 1 < len(self.route) or
                     # Move on route in backward direction
                     self.going_direction < 0 and command_number > 0
                 ):
                     command_number += self.going_direction
                     finish_time = self._exec_command(self.route[command_number])
-                elif self.going_direction < 0 and command_number == 0:
+                else:
                     break
         self.stop()
 
