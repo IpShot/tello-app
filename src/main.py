@@ -7,7 +7,7 @@ from route import Route
 from app import App
 
 def main():
-    dev =
+    dev = False
     drone = Tello()
 
     if not dev:
