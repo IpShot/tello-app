@@ -1,3 +1,4 @@
+import pygame
 import pygame.locals
 
 class DS4:
@@ -109,10 +110,12 @@ class Controller:
         elif e.type == pygame.locals.JOYHATMOTION:
             if e.value == DS4.ARROW_UP:
                 if not self.rc_control_enabled:
+                    pygame.event.clear()
                     self.drone.takeoff()
                     self.rc_control_enabled = True
             elif e.value == DS4.ARROW_DOWN:
                 if self.rc_control_enabled:
+                    pygame.event.clear()
                     self.drone.land()
                     self.rc_control_enabled = False
             elif e.value == DS4.ARROW_LEFT:
@@ -132,12 +135,14 @@ class Controller:
             elif e.button == DS4.SHARE:
                 self.freeze()
                 self.drone.emergency()
+                pygame.event.clear()
             elif e.button == DS4.OPTIONS:
                 if not route.is_creating_new:
                     route.start_creating_new('test')
                 else:
                     route.finish_creating_new()
             elif e.button == DS4.R1:
+                print('route is going: ', route.is_going)
                 if not route.is_going:
                     self.freeze()
                     route.start('test')
