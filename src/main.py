@@ -20,13 +20,13 @@ class DroneMock:
         print('emergency turn off')
     def get_battery(self):
         return -1
-    def temperature(self):
+    def get_temperature(self):
         return -1
     def get_frame_read(self):
         pass
 
 def main():
-    dev = True
+    dev = False
     drone = Tello() if not dev else DroneMock()
 
     if not dev:
@@ -41,7 +41,7 @@ def main():
 
     try:
         print(f'Drone battery: {drone.get_battery()}%')
-        print(f'Drone temperature: {drone.temperature()}C')
+        print(f'Drone temperature: {drone.get_temperature()}C')
         app.start()
     except KeyboardInterrupt as e:
         pass
