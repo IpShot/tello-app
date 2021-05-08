@@ -19,6 +19,7 @@ class Media:
 
         while self.is_recording:
             video.write(self.frame_read.frame)
+            cv2.imshow('Drone X', self.frame_read.frame)
             sleep(1 / 30)
 
         video.release()
@@ -26,6 +27,7 @@ class Media:
     def start_video_recording(self):
         self.is_recording = True
         if self.frame_read:
+            cv2.namedWindow("Drone X")
             cv2.imshow('Drone X', self.frame_read.frame)
             self.recorder.start()
 
