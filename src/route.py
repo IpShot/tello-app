@@ -12,7 +12,7 @@ class Route:
     '''
     @staticmethod
     def _save_route(route_name, route):
-        file = path.relpath('routes/' + route_name + '.txt')
+        file = path.relpath(f'routes/{route_name}.txt')
         print(file)
         with open(file, 'w') as file:
             file.writelines("%s\n" % action for action in route)

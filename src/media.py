@@ -1,4 +1,6 @@
-import time, cv2
+import cv2
+from time import time, sleep
+from os import path
 from threading import Thread
 
 class Media:
@@ -12,11 +14,12 @@ class Media:
 
     def _record_video(self):
         height, width, _ = self.frame_read.frame.shape
-        video = cv2.VideoWriter(f'video_{time()}.avi', cv2.VideoWriter_fourcc(*'XVID'), 30, (width, height))
+        file = path.relpath(f'videos/{time()}.avi')
+        video = cv2.VideoWriter(file, cv2.VideoWriter_fourcc(*'XVID'), 30, (width, height))
 
         while self.is_recording:
             video.write(self.frame_read.frame)
-            time.sleep(1 / 30)
+            sleep(1 / 30)
 
         video.release()
 
