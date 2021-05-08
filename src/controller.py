@@ -31,31 +31,20 @@ class DS4:
     L2_AXIS = 3 # between -1 (unpressed) ~ 1 (pressed)
     R2_AXIS = 4 # between -1 (unpressed) ~ 1 (pressed)
 
-class DroneMock:
-    def send_rc_control(self, *args):
-        pass
-    def set_speed(self, speed):
-        print('set speed %s cm/s' % speed)
-    def takeoff(self):
-        print('take off')
-    def land(self):
-        print('land')
-    def emergency(self):
-        print('emergency turn off')
-
 class Controller:
     DEADZONE = 0.2 # Skip event reaction if value is smaller
 
-    def __init__(self, drone, speed=30, dev=False, logs=True):
+    def __init__(self, drone, speed=30, logs=True):
         self.logs = logs
-        self.drone = DroneMock() if dev else drone
+        self.drone = drone
 
         # Drone velocities between -100~100
         self.speed = speed
         self.drone.set_speed(speed)
+        self.reset()
 
     def reset(self):
-        pygame.event.clear()
+        # pygame.event.clear()
         self.forward_back_velocity = 0
         self.left_right_velocity = 0
         self.up_down_velocity = 0
@@ -97,7 +86,7 @@ class Controller:
         self.stop_move()
         self.lock()
 
-    def handle_event(self, e, route):
+    def handle_event(self, e, route, media):
         # Joystics
         if e.type == pygame.locals.JOYAXISMOTION:
             if e.axis == DS4.LEFT_JOY_X:
@@ -114,12 +103,14 @@ class Controller:
             if e.value == DS4.ARROW_UP:
                 if not self.rc_control_enabled:
                     self.reset()
+                    media.start_video_recording()
                     self.drone.takeoff()
                     self.rc_control_enabled = True
             elif e.value == DS4.ARROW_DOWN:
                 if self.rc_control_enabled:
                     self.reset()
                     self.drone.land()
+                    media.stop_video_recording()
             elif e.value == DS4.ARROW_LEFT:
                 if route.is_going:
                     route.prev_stop_point()

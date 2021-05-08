@@ -4,9 +4,10 @@ class App:
     """
     Module for managing events
     """
-    def __init__(self, controller, route):
+    def __init__(self, controller, route, media):
         self.controller = controller
         self.route = route
+        self.media = media
 
     def handle_event(self, e):
         if e.type == pygame.USEREVENT + 1:
@@ -14,7 +15,7 @@ class App:
             if move_data:
                 self.route.capture_move(move_data)
         else:
-            self.controller.handle_event(e, self.route)
+            self.controller.handle_event(e, self.route, self.media)
 
     def start(self):
         pygame.init()
@@ -43,3 +44,6 @@ class App:
             if joystick_connected:
                 for e in pygame.event.get():
                     self.handle_event(e)
+
+    def stop(self):
+        self.media.stop_video_recording()

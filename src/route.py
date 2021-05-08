@@ -27,8 +27,7 @@ class Route:
             route = [eval(action.rstrip()) for action in file.readlines()]
         return route
 
-    def __init__(self, drone, controller):
-        self.drone = drone
+    def __init__(self, controller):
         self.controller = controller
         self._reset()
 
