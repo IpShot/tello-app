@@ -1,4 +1,4 @@
-# Drone Tours prototype
+# Drone Tour prototype
 
 Features:
 - Recording a route with stop points
